@@ -1,4 +1,27 @@
+
+
+.box{
+  display: flex;
+  flex-direction: row;
+}
+
 .leaflet-container{
-  width: 80vw;
-  height: 80vh;
+  width: 75vw;
+  height: 100vh;
+}
+
+.header-map{
+  display: flex;
+  flex-direction: column;
+  width: auto;
+}
+
+.header{
+  width: auto;
+  height: 18vh;
+  background-color: #ebe7e7;
+}
+
+.leaflet-draw-edit-edit, .leaflet-draw-edit-remove{
+  display: none !important;
 }
