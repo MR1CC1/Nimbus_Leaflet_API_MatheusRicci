@@ -13,6 +13,7 @@ const Gerenciamento = () => {
     });
 
     const [mapPosition, setMapPosition] = useState([5, 0]);
+    const [tempZoom, setTempZoom] = useState(formData.zoom);
 
     useEffect(() => {
         const fetchDataFromApi = async () => {
@@ -35,38 +36,41 @@ const Gerenciamento = () => {
         };
 
         fetchDataFromApi();
-    }, []); // Dependências vazias para rodar apenas uma vez
+    }, []);
 
     const handleInputChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: parseFloat(e.target.value),
-        });
+        if (e.target.name === 'zoom') {
+            setTempZoom(e.target.value);
+        } else {
+            setFormData({
+                ...formData,
+                [e.target.name]: parseFloat(e.target.value),
+            });
+        }
     };
     const handleSaveClick = async () => {
+        const newFormData = {
+            ...formData,
+            zoom: parseFloat(tempZoom),
+        };
+
         try {
             const response = await axios.get('http://localhost:3001/maps');
             const existingData = response.data;
 
             if (existingData.length > 0) {
-                // Se já existe um mapa salvo, atualizamos os dados
-                await axios.put(`http://localhost:3001/maps/${existingData[0].id}`, formData);
+                await axios.put(`http://localhost:3001/maps/${existingData[0].id}`, newFormData);
             } else {
-                // Se não existe um mapa, criamos um novo
-                await axios.post('http://localhost:3001/maps', formData);
+                await axios.post('http://localhost:3001/maps', newFormData);
             }
 
-            // Atualize o estado com os dados do formulário, que presumivelmente foram salvos corretamente
-            setMapPosition([formData.lat, formData.lng]);
-            console.log('Dados enviados e estado atualizado com sucesso:', formData);
+            setFormData(newFormData);
+            setMapPosition([newFormData.lat, newFormData.lng]);
+            console.log('Dados enviados e estado atualizado com sucesso:', newFormData);
         } catch (error) {
             console.error('Erro ao enviar dados:', error);
         }
     };
-
-    // No restante do componente...
-
-
 
     L.Icon.Default.mergeOptions({
         iconRetinaUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.1/images/marker-icon.png",
@@ -80,7 +84,6 @@ const Gerenciamento = () => {
             <div className='header-map'>
                 <div className='header'>
                     <h1>Ponto e Zoom Iniciais</h1>
-
                     <label>lat</label>
                     <input
                         type="number"
@@ -88,7 +91,6 @@ const Gerenciamento = () => {
                         value={formData.lat}
                         onChange={handleInputChange}
                     />
-
                     <label>lng</label>
                     <input
                         type="number"
@@ -96,15 +98,13 @@ const Gerenciamento = () => {
                         value={formData.lng}
                         onChange={handleInputChange}
                     />
-
                     <label>Zoom</label>
                     <input
                         type="number"
                         name="zoom"
-                        value={formData.zoom}
+                        value={tempZoom}
                         onChange={handleInputChange}
                     />
-
                     <button onClick={handleSaveClick}>
                         Salvar
                     </button>
@@ -113,7 +113,7 @@ const Gerenciamento = () => {
                     center={mapPosition}
                     zoom={formData.zoom}
                     scrollWheelZoom={true}
-                    key={mapPosition.join('_')} // chave única baseada na posição do mapa
+                    key={`${mapPosition.join('_')}_${formData.zoom}`}
                 >
                     <ToolBar />
                     <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
