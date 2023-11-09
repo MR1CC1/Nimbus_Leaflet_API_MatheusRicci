@@ -6,6 +6,7 @@ import ToolBar from '../../ToolBar/ToolBar';
 import SideBar from '../../SideBar/SideBar';
 import axios from 'axios';
 
+
 // Componente funcional Gerenciamento.
 const Gerenciamento = () => {
     // Estado para armazenar e alterar os dados do formulário relacionados ao mapa (latitude, longitude e zoom).
@@ -16,7 +17,7 @@ const Gerenciamento = () => {
     });
 
     // Estado para armazenar a posição atual do mapa.
-    const [mapPosition, setMapPosition] = useState([5, 0]);
+    const [mapPosition, setMapPosition] = useState([-22.914274, -43.092566]);
 
     // Estado para armazenar temporariamente o valor do zoom antes de salvar.
     const [tempZoom, setTempZoom] = useState(formData.zoom);
