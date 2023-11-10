@@ -1,22 +1,24 @@
-
-
-.box{
+.box {
   display: flex;
   flex-direction: row;
 }
 
-.leaflet-container{
+.leaflet-container {
   width: 81vw;
   height: 100vh;
 }
 
-.header-map{
+h1 {
+  margin: 0px 0px 5px 0px;
+}
+
+.header-map {
   display: flex;
   flex-direction: column;
   width: auto;
 }
 
-.header{
+.header {
   width: auto;
   height: 18vh;
   background-color: #ebe7e7;
@@ -24,44 +26,42 @@
   font-weight: 600;
 }
 
-.leaflet-draw-edit-edit, .leaflet-draw-edit-remove{
+.leaflet-draw-edit-edit,
+.leaflet-draw-edit-remove {
   display: none !important;
 }
 
-.header input{
-  width: 5rem;
-  height: 1rem;
+.header input {
+  width: 150px;
+  height: 20px;
   margin: 13px;
 }
 
-.header button{
+.header button {
   background-color: #104e8b;
   color: #ebe7e7;
   padding: 5px 10px;
   border-radius: 7px;
 }
 
-
-.interest-point{
+.interest-point {
   width: 100%;
   display: flex;
   justify-content: center;
   margin-bottom: 15px;
 }
 
-.interest-point-span{
+.interest-point-span {
   display: flex;
   font-size: 1.6rem;
   font-weight: 500;
   align-items: center;
 }
 
-
-.icons-fa{
+.icons-fa {
   cursor: pointer;
 }
 
-.icons-fa:hover{
+.icons-fa:hover {
   color: #d18720;
 }
-
