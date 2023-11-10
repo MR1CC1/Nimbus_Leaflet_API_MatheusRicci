@@ -14,7 +14,7 @@ const Visualizacao = () => {
 
   return (
     <div className='box'>
-      <SideBar />
+      <SideBar/>
       <div className='header-map'>
         <div className='header'>
           <h1>Visualização dos pontos e áreas de interesse</h1>

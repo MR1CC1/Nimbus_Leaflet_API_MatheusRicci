@@ -5,7 +5,7 @@ import L from "leaflet";
 import ToolBar from '../../ToolBar/ToolBar';
 import SideBar from '../../SideBar/SideBar';
 import axios from 'axios';
-
+import { FaPlus } from "react-icons/fa";
 
 // Componente funcional Gerenciamento.
 const Gerenciamento = () => {
@@ -104,19 +104,37 @@ const Gerenciamento = () => {
     // JSX que define o que será renderizado na tela: Sidebar, campos do formulário e o MapContainer.
     return (
         <div className='box'>
-            <SideBar />
+            <SideBar>
+                <div className='interest-point'>
+                    <span className='interest-point-span'>Pontos&nbsp;<FaPlus className='icons-fa' onClick={() => {
+                        alert("ok")
+                    }}/></span>
+                </div>
+
+                <div className='interest-point'>
+                    <span className='interest-point-span'>Áreas&nbsp;<FaPlus className='icons-fa' onClick={() => {
+                        alert("ok")
+                    }}/></span>
+                </div>
+
+                <div className='interest-point'>
+                    <span className='interest-point-span'>Perímetros&nbsp;<FaPlus className='icons-fa' onClick={() => {
+                        alert("ok")
+                    }}/></span>
+                </div>
+            </SideBar>
             <div className='header-map'>
                 <div className='header'>
                     <h1>Ponto e Zoom Iniciais</h1>
                     {/* Inputs para lat, lng e zoom controlados pelo estado do React */}
-                    <label>lat</label>
+                    <label>Latitude</label>
                     <input
                         type="number"
                         name="lat"
                         value={formData.lat}
                         onChange={handleInputChange}
                     />
-                    <label>lng</label>
+                    <label>Longitude</label>
                     <input
                         type="number"
                         name="lng"
