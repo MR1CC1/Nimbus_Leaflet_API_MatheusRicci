@@ -26,11 +26,6 @@ h1 {
   font-weight: 600;
 }
 
-.leaflet-draw-edit-edit,
-.leaflet-draw-edit-remove {
-  display: none !important;
-}
-
 .header input {
   width: 150px;
   height: 20px;
