@@ -1,7 +1,6 @@
 import React from 'react'
 import { MapContainer, TileLayer } from 'react-leaflet';
 import SideBar from '../../SideBar/SideBar';
-import ToolBar from '../../ToolBar/ToolBar';
 import L from "leaflet";
 
 const Visualizacao = () => {
@@ -42,7 +41,6 @@ const Visualizacao = () => {
           zoom={12}
           scrollWheelZoom={true}
         >
-          <ToolBar />
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
         </MapContainer>
       </div>

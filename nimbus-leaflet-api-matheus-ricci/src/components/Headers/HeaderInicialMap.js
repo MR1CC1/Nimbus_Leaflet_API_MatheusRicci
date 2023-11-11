@@ -1,7 +1,6 @@
 // Importações necessárias do React, biblioteca de mapas, ícones, axios para chamadas de API e componentes locais.
 import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer } from 'react-leaflet';
-import ToolBar from '../ToolBar/ToolBar';
 import axios from 'axios';
 import '../SideBar/SideBar.css'
 
@@ -130,8 +129,6 @@ const HeaderInicialMap = () => {
                 scrollWheelZoom={true}
                 key={`${mapPosition.join('_')}_${formData.zoom}`}
             >
-                {/* ToolBar pode ser um componente personalizado para controle do mapa */}
-                <ToolBar />
                 {/* TileLayer é o componente que renderiza as imagens do mapa */}
                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
             </MapContainer>

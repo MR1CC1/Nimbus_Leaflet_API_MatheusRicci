@@ -1,28 +1,38 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react';
 import { MapContainer, Marker, TileLayer, useMapEvents } from 'react-leaflet';
-import ToolBar from '../ToolBar/ToolBar';
-import '../SideBar/SideBar.css'
+import '../SideBar/SideBar.css';
 
 const HeaderPoint = () => {
-
-    const [descPoint, SetDescPoint] = useState('')
-    const [latPoint, SetLatPoint] = useState(0)
-    const [lngPoint, SetLngPoint] = useState(0)
+    const [descPoint, SetDescPoint] = useState('');
+    const [latPoint, SetLatPoint] = useState(0);
+    const [lngPoint, SetLngPoint] = useState(0);
+    const [marker, setMarker] = useState(null);
 
     const handleInputDesc = (e) => {
-        SetDescPoint(e.target.value)
-    }
+        SetDescPoint(e.target.value);
+    };
 
     const handleInputLat = (e) => {
-        SetLatPoint(e.target.value)
-    }
+        const newLat = parseFloat(e.target.value);
+        SetLatPoint(newLat);
+        if (!isNaN(newLat) && !isNaN(lngPoint)) {
+            setMarker({ lat: newLat, lng: lngPoint });
+        }
+    };
 
     const handleInputLng = (e) => {
-        SetLngPoint(e.target.value)
-    }
+        const newLng = parseFloat(e.target.value);
+        SetLngPoint(newLng);
+        if (!isNaN(latPoint) && !isNaN(newLng)) {
+            setMarker({ lat: latPoint, lng: newLng });
+        }
+    };
 
-    // Armazenando apenas o último marcador
-    const [marker, setMarker] = useState(null);
+    useEffect(() => {
+        if (latPoint && lngPoint) {
+            setMarker({ lat: latPoint, lng: lngPoint });
+        }
+    }, [latPoint, lngPoint]);
 
     function MapClickHandler() {
         useMapEvents({
@@ -31,7 +41,7 @@ const HeaderPoint = () => {
                 setMarker(newMarker);
                 SetLatPoint(newMarker.lat);
                 SetLngPoint(newMarker.lng);
-            }
+            },
         });
         return null;
     }
@@ -40,7 +50,6 @@ const HeaderPoint = () => {
         <div className='header-map'>
             <div className='header'>
                 <h1>Novo Ponto</h1>
-                {/* Inputs para descrição, latitude e longitude controlados pelo estado do React */}
                 <label>Descrição</label>
                 <input
                     type="text"
@@ -50,34 +59,30 @@ const HeaderPoint = () => {
                 <label>Latitude</label>
                 <input
                     type="number"
-                    value={latPoint}
+                    value={latPoint || ''}
                     onChange={handleInputLat}
                 />
                 <label>Longitude</label>
                 <input
                     type="number"
-                    value={lngPoint}
+                    value={lngPoint || ''}
                     onChange={handleInputLng}
                 />
-                {/* Botão para salvar */}
                 <button>
                     Salvar
                 </button>
             </div>
-            {/* MapContainer do react-leaflet para renderizar o mapa */}
             <MapContainer
                 center={[10, 10]}
                 zoom={13}
                 scrollWheelZoom={true}
             >
-                <ToolBar />
                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                {/* Renderiza o último marcador */}
                 {marker && <Marker position={marker}></Marker>}
                 <MapClickHandler />
             </MapContainer>
         </div>
-    )
+    );
 }
 
-export default HeaderPoint
+export default HeaderPoint;
