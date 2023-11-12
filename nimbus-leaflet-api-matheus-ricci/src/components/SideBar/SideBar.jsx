@@ -12,7 +12,7 @@ const SideBar = ({ children }) => {
   return (
     <div className='sidebar'>
       <div id="cssmenu">
-        <ul>
+        <ul id='page-link'>
           <li style={isActive('/') ? { backgroundColor: '#F3F3F3', color: '#333333' } : {}} onClick={() => { window.location.reload() }}>
             <Link to="/">Gerenciamento</Link>
           </li>
