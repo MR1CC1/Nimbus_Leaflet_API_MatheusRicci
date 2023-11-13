@@ -36,31 +36,9 @@ const HeaderInicialMap = () => {
                         lng: existingData.lng,
                         zoom: existingData.zoom,
                     });
-
                     setMapPosition([existingData.lat, existingData.lng]);
-                    toast.success('Ponto e Zoom Inicial Salvo com Sucesso!', {
-                        position: "top-right",
-                        autoClose: 3000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                        theme: "light",
-                    });
                 }
             } catch (error) {
-                // Em caso de erro na chamada da API, logue o erro no console.
-                toast.error('Erro ao Salvar o Ponto e Zoom Inicial!', {
-                    position: "top-right",
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                });
             }
         };
 
@@ -104,11 +82,29 @@ const HeaderInicialMap = () => {
             // Atualize os estados formData e mapPosition com os novos dados.
             setFormData(newFormData);
             setMapPosition([newFormData.lat, newFormData.lng]);
-            // Logue no console que os dados foram enviados com sucesso.
-            console.log('Dados enviados e estado atualizado com sucesso:', newFormData);
+            // Logue no Toast que os dados foram enviados com sucesso.
+            toast.success('Ponto e Zoom Inicial Salvo com Sucesso!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
         } catch (error) {
-            // Em caso de erro ao enviar dados, logue o erro no console.
-            console.error('Erro ao enviar dados:', error);
+            // Em caso de erro ao enviar dados, logue o erro no Toast.
+            toast.error('Erro ao Salvar a Área!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
         }
     };
 
