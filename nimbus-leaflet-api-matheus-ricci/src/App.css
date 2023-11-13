@@ -15,7 +15,7 @@ h1 {
 .header-map {
   display: flex;
   flex-direction: column;
-  width: auto;
+  width: 81vw;
 }
 
 .header {
