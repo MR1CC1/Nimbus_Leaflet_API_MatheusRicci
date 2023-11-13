@@ -13,7 +13,7 @@ const HeaderPoint = () => {
     const savePoint = async () => {
         // Prepara os dados do ponto para envio
         const pointData = {
-            desc: descPoint,
+            description: descPoint,
             lat: latPoint,
             lng: lngPoint
         };
