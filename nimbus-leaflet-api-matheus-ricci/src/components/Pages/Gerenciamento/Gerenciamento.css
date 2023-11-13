@@ -1,0 +1,9 @@
+#list-markers{
+    display: flex;
+    justify-content: space-between;
+    color: #d18720;
+}
+
+#icon-trash:hover{
+    color: #d18720;
+}
