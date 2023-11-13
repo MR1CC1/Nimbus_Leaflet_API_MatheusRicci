@@ -33,7 +33,7 @@ const Gerenciamento = () => {
     // Definindo um componente para os botões do cabeçalho.
     const HeaderButton = ({ label, page }) => (
         <div className='interest-point'>
-            <span className='interest-point-span'>{label} <FaPlus className='icons-fa' onClick={() => setHeaderPage(page)} /></span>
+            <span className='interest-point-span'>{label}&nbsp;<FaPlus className='icons-fa' onClick={() => setHeaderPage(page)} /></span>
         </div>
     );
 
