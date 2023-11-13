@@ -1,7 +1,7 @@
 // Importando os módulos necessários para o componente.
 import React, { useState, useEffect } from "react";
 import L from "leaflet"; // Leaflet para mapas interativos
-import { FaPlus, FaTrashAlt } from "react-icons/fa"; // Ícones do FontAwesome
+import { FaPlus, FaTrashAlt, FaEdit } from "react-icons/fa"; // Ícones do FontAwesome
 import SideBar from '../../SideBar/SideBar'; // Componente da barra lateral
 import HeaderInicialMap from '../../Headers/HeaderInicialMap';
 import HeaderPoint from "../../Headers/HeaderPoint";
@@ -10,6 +10,8 @@ import HeaderPerimeters from "../../Headers/HeaderPerimeters";
 import { Marker, Rectangle, Circle, Popup } from 'react-leaflet'; // Componentes do Leaflet para o mapa
 import './Gerenciamento.css'; // Estilos CSS específicos
 import axios from "axios"; // Axios para requisições HTTP
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 // Definindo o componente funcional 'Gerenciamento'.
 const Gerenciamento = () => {
@@ -45,18 +47,28 @@ const Gerenciamento = () => {
     // Função para excluir um item
     const deleteItem = (type, id) => {
         axios.delete(`http://localhost:3001/${type}s/${id}`)
-        .then(() => {
-            // Atualiza os estados após a exclusão
-            if (type === 'point') {
-                setPoints(points.filter(item => item.id !== id));
-            } else if (type === 'area') {
-                setAreas(areas.filter(item => item.id !== id));
-            } else if (type === 'perimeter') {
-                setPerimeters(perimeters.filter(item => item.id !== id));
-            }
-            setSelectedItems(selectedItems.filter(item => item.id !== id));
-        })
-        .catch(error => console.error('Erro ao excluir o item:', error));
+            .then(() => {
+                // Atualiza os estados após a exclusão
+                if (type === 'point') {
+                    setPoints(points.filter(item => item.id !== id));
+                } else if (type === 'area') {
+                    setAreas(areas.filter(item => item.id !== id));
+                } else if (type === 'perimeter') {
+                    setPerimeters(perimeters.filter(item => item.id !== id));
+                }
+                setSelectedItems(selectedItems.filter(item => item.id !== id));
+                toast.success('Item Excluido com Sucesso!', {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
+            })
+            .catch(error => console.error('Erro ao excluir o item:', error));
     };
 
     // Renderiza as listas na barra lateral
@@ -65,14 +77,18 @@ const Gerenciamento = () => {
             {items.map((item) => (
                 <li
                     key={item.id}
-                    // Removido o controle de cor ao clicar no item
+                // Removido o controle de cor ao clicar no item
                 >
                     <div id="list-markers">
                         {item.description}
-                        <FaTrashAlt id="icon-trash" onClick={(e) => {
-                            e.stopPropagation();
-                            deleteItem(type, item.id);
-                        }} />
+                        <div>
+                            <FaEdit />
+                            &nbsp;
+                            <FaTrashAlt id="icon-trash" onClick={(e) => {
+                                e.stopPropagation();
+                                deleteItem(type, item.id);
+                            }} />
+                        </div>
                     </div>
                 </li>
             ))}
@@ -134,6 +150,19 @@ const Gerenciamento = () => {
                 {renderList(perimeters, "perimeter")}
             </SideBar>
             <HeaderComponent>
+            <ToastContainer
+                position="top-right"
+                autoClose={3000}
+                limit={2}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+            />
                 {renderMarkers()}
                 {renderAreas()}
                 {renderPerimeters()}

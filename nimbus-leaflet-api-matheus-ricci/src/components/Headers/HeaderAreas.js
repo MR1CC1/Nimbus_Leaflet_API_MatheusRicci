@@ -145,7 +145,10 @@ const HeaderAreas = () => {
                 <input type="number" value={bounds ? bounds.getWest() : ''} onChange={(e) => handleLngChange('west', parseFloat(e.target.value))} />
                 <label>Longitude Direita</label>
                 <input type="number" value={bounds ? bounds.getEast() : ''} onChange={(e) => handleLngChange('east', parseFloat(e.target.value))} />
-                <button onClick={saveArea}>Salvar</button>
+                <button onClick={() => {
+                    saveArea()
+                    window.location.reload()
+                }}>Salvar</button>
             </div>
             {/* Container do mapa com camada de tiles e retângulo representando a área selecionada */}
             <MapContainer center={[10, 10]} zoom={13} scrollWheelZoom={true}>

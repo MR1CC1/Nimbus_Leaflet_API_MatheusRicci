@@ -135,7 +135,10 @@ const HeaderPoint = () => {
                     value={lngPoint || ''}
                     onChange={handleInputLng}
                 />
-                <button onClick={savePoint}>
+                <button onClick={() => {
+                    savePoint()
+                    window.location.reload()
+                }}>
                     Salvar
                 </button>
             </div>

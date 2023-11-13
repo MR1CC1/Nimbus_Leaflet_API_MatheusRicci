@@ -129,7 +129,10 @@ const HeaderPerimeters = () => {
                 <input type="number" value={circleCenter ? circleCenter.lng : ''} onChange={handleLngChange} />
                 <label>Raio (metros)</label>
                 <input type="number" value={circleRadius} onChange={handleRadiusChange} />
-                <button onClick={savePerimeter}>Salvar</button>
+                <button onClick={() => {
+                    savePerimeter()
+                    window.location.reload()
+                }}>Salvar</button>
             </div>
             {/* Container do mapa com uma camada de tile e um círculo representando o perímetro */}
             <MapContainer center={[10, 10]} zoom={13} scrollWheelZoom={true}>
