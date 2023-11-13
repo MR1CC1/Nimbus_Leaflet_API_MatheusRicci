@@ -1,6 +1,8 @@
 import React, { useState, useCallback } from 'react';
 import { MapContainer, TileLayer, Rectangle, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
 
 // Componente para lidar com eventos do mapa
 const MapEventHandler = ({ onMapClick, onMapMouseMove, drawing }) => {
@@ -77,10 +79,28 @@ const HeaderAreas = () => {
             });
 
             if (response.ok) {
-                console.log('Área Salva');
+                toast.success('Área Salva com Sucesso!', {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
             }
         } catch (error) {
-            console.error('Erro ao Salvar a Área', error);
+            toast.error('Erro ao Salvar a Área!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
         }
     };
 
@@ -99,6 +119,19 @@ const HeaderAreas = () => {
     // Renderiza o componente
     return (
         <div className='header-map'>
+            <ToastContainer
+                position="top-right"
+                autoClose={3000}
+                limit={2}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+            />
             <div className='header'>
                 <h1>Nova Área</h1>
                 {/* Campos de entrada para descrição e coordenadas da área */}

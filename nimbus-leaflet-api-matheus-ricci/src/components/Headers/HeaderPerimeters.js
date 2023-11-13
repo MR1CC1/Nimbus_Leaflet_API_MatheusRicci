@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { MapContainer, TileLayer, Circle, useMapEvents } from 'react-leaflet';
 import L from 'leaflet'; // Importando a biblioteca Leaflet para manipulação de mapas
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
 
 const HeaderPerimeters = () => {
     // Estados para armazenar a descrição, o centro do círculo, se está desenhando e o raio do círculo
@@ -32,10 +34,28 @@ const HeaderPerimeters = () => {
             });
 
             if (response.ok) {
-                console.log('Perímetro Salvo');
+                toast.success('Perímetro Salvo com Sucesso!', {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
             }
         } catch (error) {
-            console.error('Erro ao Salvar o Perímetro', error);
+            toast.error('Erro ao Salvar o Perímetro!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
         }
     };
 
@@ -85,6 +105,19 @@ const HeaderPerimeters = () => {
 
     return (
         <div className='header-map'>
+            <ToastContainer
+                position="top-right"
+                autoClose={3000}
+                limit={2}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+            />
             <div className='header'>
                 <h1>Novo Perímetro</h1>
                 {/* Campos de entrada para descrição, latitude, longitude e raio */}

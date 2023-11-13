@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { MapContainer, Marker, TileLayer, useMapEvents } from 'react-leaflet';
 import '../SideBar/SideBar.css';
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
 
 const HeaderPoint = () => {
     // Estados para gerenciar descrição, latitude, longitude e o marcador no mapa
@@ -29,10 +31,28 @@ const HeaderPoint = () => {
             });
 
             if (response.ok) {
-                console.log('Ponto Salvo');
+                toast.success('Ponto Salvo com Sucesso!', {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
             }
         } catch (error) {
-            console.error('Erro ao Salvar o Ponto', error);
+            toast.error('Erro ao Salvar o Ponto!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
         }
     };
 
@@ -81,6 +101,19 @@ const HeaderPoint = () => {
 
     return (
         <div className='header-map'>
+            <ToastContainer
+                position="top-right"
+                autoClose={3000}
+                limit={2}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+            />
             <div className='header'>
                 <h1>Novo Ponto</h1>
                 {/* Campos de entrada para descrição, latitude e longitude */}

@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer } from 'react-leaflet';
 import axios from 'axios';
 import '../SideBar/SideBar.css'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
 
 const HeaderInicialMap = () => {
 
@@ -36,10 +38,29 @@ const HeaderInicialMap = () => {
                     });
 
                     setMapPosition([existingData.lat, existingData.lng]);
+                    toast.success('Ponto e Zoom Inicial Salvo com Sucesso!', {
+                        position: "top-right",
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "light",
+                    });
                 }
             } catch (error) {
                 // Em caso de erro na chamada da API, logue o erro no console.
-                console.error('Erro ao buscar dados da API:', error);
+                toast.error('Erro ao Salvar o Ponto e Zoom Inicial!', {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
             }
         };
 
@@ -93,6 +114,19 @@ const HeaderInicialMap = () => {
 
     return (
         <div className='header-map'>
+            <ToastContainer
+                position="top-right"
+                autoClose={3000}
+                limit={2}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+            />
             <div className='header'>
                 <h1>Ponto e Zoom Iniciais</h1>
                 {/* Inputs para lat, lng e zoom controlados pelo estado do React */}
