@@ -4,7 +4,7 @@
 }
 
 .leaflet-container {
-  width: 81vw;
+  width: 80vw;
   height: 100vh;
 }
 
@@ -15,7 +15,7 @@ h1 {
 .header-map {
   display: flex;
   flex-direction: column;
-  width: 81vw;
+  width: 80vw;
 }
 
 .header {
@@ -44,6 +44,7 @@ h1 {
   display: flex;
   justify-content: center;
   margin-bottom: 15px;
+  margin-top: 15px;
 }
 
 .interest-point-span {
