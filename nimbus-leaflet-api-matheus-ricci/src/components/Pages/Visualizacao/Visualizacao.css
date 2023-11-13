@@ -1,0 +1,20 @@
+#render-list{
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#render-list li {
+    list-style: none;
+    width: 17.5vw;
+    padding: 5px;
+    margin: 1px;
+    color: #333;
+    border-radius: 5px;
+}
+
+#render-list li div {
+    cursor: pointer;
+}
