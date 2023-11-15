@@ -4,57 +4,60 @@ import '../SideBar/SideBar.css';
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 
-const HeaderPoint = () => {
-    // Estados para gerenciar descrição, latitude, longitude e o marcador no mapa
+const HeaderPoint = ({ mode, id,  description, latitude, longitude }) => {
+    // Usar os valores das props para inicializar os estados
     const [descPoint, SetDescPoint] = useState('');
     const [latPoint, SetLatPoint] = useState(0);
     const [lngPoint, SetLngPoint] = useState(0);
     const [marker, setMarker] = useState(null);
 
-    // Função para salvar o ponto no servidor
+    useEffect(() => {
+        SetDescPoint(description || '');
+        SetLatPoint(latitude || 0);
+        SetLngPoint(longitude || 0);
+    }, [description, latitude, longitude]);
+
     const savePoint = async () => {
-        // Prepara os dados do ponto para envio
         const pointData = {
             description: descPoint,
             lat: latPoint,
             lng: lngPoint
         };
-
-        // Faz a requisição POST para salvar os dados
+    
+        let response;
         try {
-            const response = await fetch('http://localhost:3001/points', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(pointData),
-            });
-
+            if (mode === "Editar") {
+                // Requisição PUT para atualizar o ponto
+                response = await fetch(`http://localhost:3001/points/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(pointData),
+                });
+            } else {
+                // Requisição POST para criar um novo ponto
+                response = await fetch('http://localhost:3001/points', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(pointData),
+                });
+            }
+    
             if (response.ok) {
                 toast.success('Ponto Salvo com Sucesso!', {
-                    position: "top-right",
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
+                    // Configurações do toast
                 });
             }
         } catch (error) {
             toast.error('Erro ao Salvar o Ponto!', {
-                position: "top-right",
-                autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
+                // Configurações do toast
             });
         }
     };
+    
 
     // Funções para manipular mudanças nos inputs de descrição, latitude e longitude
     const handleInputDesc = (e) => {
@@ -115,7 +118,7 @@ const HeaderPoint = () => {
                 theme="light"
             />
             <div className='header'>
-                <h1>Novo Ponto</h1>
+                <h1>{mode} Ponto</h1>
                 {/* Campos de entrada para descrição, latitude e longitude */}
                 <label>Descrição</label>
                 <input

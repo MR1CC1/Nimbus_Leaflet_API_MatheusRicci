@@ -21,6 +21,7 @@ const Gerenciamento = () => {
     const [areas, setAreas] = useState([]); // Estado para armazenar as áreas
     const [perimeters, setPerimeters] = useState([]); // Estado para armazenar os perímetros
     const [selectedItems, setSelectedItems] = useState([]); // Estado para gerenciar itens selecionados
+    const [currentItem, setCurrentItem] = useState(null);
 
     // Configuração inicial dos ícones do Leaflet
     L.Icon.Default.mergeOptions({
@@ -29,13 +30,38 @@ const Gerenciamento = () => {
         shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.1/images/marker-shadow.png",
     });
 
-    // Mapeamento para renderizar o componente de cabeçalho correto
-    const headers = {
-        'points': HeaderPoint,
-        'areas': HeaderAreas,
-        'perimeters': HeaderPerimeters,
-        'default': HeaderInicialMap
+    const renderHeader = () => {
+        switch (headerPage) {
+            case 'points':
+                return <HeaderPoint mode={"Novo"} />;
+            case 'editpoints':
+                return <HeaderPoint 
+                mode="Editar" 
+                id={currentItem?.id}
+                description={currentItem?.description}
+                latitude={currentItem?.lat}
+                longitude={currentItem?.lng} />;
+            case 'areas':
+                return <HeaderAreas mode={"Nova"} />;
+            case 'editareas':
+                return <HeaderAreas mode={"Editar"} description={currentItem?.description} />;
+            case 'perimeters':
+                return <HeaderPerimeters mode={"Novo"} />;
+            case 'editperimeters':
+                return <HeaderPerimeters mode={"Editar"} description={currentItem?.description} />;
+            default:
+                return <HeaderInicialMap />;
+        }
     };
+
+    const EditHeaderButton = ({ page, item }) => (
+        <div className='interest-point'>
+            <FaEdit className='icons-fa' onClick={() => {
+                setHeaderPage(page);
+                setCurrentItem(item); // Atualiza o item atual
+            }} />
+        </div>
+    );
 
     // Carrega os dados da API na montagem do componente
     useEffect(() => {
@@ -82,7 +108,9 @@ const Gerenciamento = () => {
                     <div id="list-markers">
                         {item.description}
                         <div>
-                            <FaEdit />
+                            {type === 'point' ? <EditHeaderButton page="editpoints" item={item} /> :
+                                type === 'area' ? <EditHeaderButton page="editareas" item={item} />
+                                    : <EditHeaderButton page="editperimeters" item={item} />}
                             &nbsp;
                             <FaTrashAlt id="icon-trash" onClick={(e) => {
                                 e.stopPropagation();
@@ -135,9 +163,6 @@ const Gerenciamento = () => {
         </div>
     );
 
-    // Componente principal de cabeçalho
-    const HeaderComponent = headers[headerPage];
-
     // Renderização do componente
     return (
         <div className='box'>
@@ -149,24 +174,25 @@ const Gerenciamento = () => {
                 <HeaderButton label="Perímetros" page="perimeters" />
                 {renderList(perimeters, "perimeter")}
             </SideBar>
-            <HeaderComponent>
-            <ToastContainer
-                position="top-right"
-                autoClose={3000}
-                limit={2}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="light"
-            />
+            <div>
+                {renderHeader()}
+                <ToastContainer
+                    position="top-right"
+                    autoClose={3000}
+                    limit={2}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                    theme="light"
+                />
                 {renderMarkers()}
                 {renderAreas()}
                 {renderPerimeters()}
-            </HeaderComponent>
+            </div>
         </div>
     );
 };

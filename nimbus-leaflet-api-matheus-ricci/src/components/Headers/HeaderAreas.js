@@ -14,7 +14,7 @@ const MapEventHandler = ({ onMapClick, onMapMouseMove, drawing }) => {
 };
 
 // Componente principal para criar áreas no mapa
-const HeaderAreas = () => {
+const HeaderAreas = (props) => {
     // Estados para gerenciar a descrição da área, limites, se está desenhando e o ponto inicial.
     const [description, setDescription] = useState('');
     const [bounds, setBounds] = useState(null);
@@ -133,7 +133,7 @@ const HeaderAreas = () => {
                 theme="light"
             />
             <div className='header'>
-                <h1>Nova Área</h1>
+                <h1>{props.mode} Área</h1>
                 {/* Campos de entrada para descrição e coordenadas da área */}
                 <label>Descrição</label>
                 <input type="text" value={description} onChange={(e) => setDescription(e.target.value)} />

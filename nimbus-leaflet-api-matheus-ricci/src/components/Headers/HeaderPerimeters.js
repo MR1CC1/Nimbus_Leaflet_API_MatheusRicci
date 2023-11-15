@@ -4,7 +4,7 @@ import L from 'leaflet'; // Importando a biblioteca Leaflet para manipulação d
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 
-const HeaderPerimeters = () => {
+const HeaderPerimeters = (props) => {
     // Estados para armazenar a descrição, o centro do círculo, se está desenhando e o raio do círculo
     const [description, setDescription] = useState('');
     const [circleCenter, setCircleCenter] = useState(null);
@@ -119,7 +119,7 @@ const HeaderPerimeters = () => {
                 theme="light"
             />
             <div className='header'>
-                <h1>Novo Perímetro</h1>
+                <h1>{props.mode} Perímetro</h1>
                 {/* Campos de entrada para descrição, latitude, longitude e raio */}
                 <label>Descrição</label>
                 <input type="text" value={description} onChange={(e) => setDescription(e.target.value)} />
