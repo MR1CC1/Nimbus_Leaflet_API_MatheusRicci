@@ -4,6 +4,12 @@
     color: #d18720;
 }
 
+#list-markers div{
+    display: flex;
+    font-size: 25px;
+    align-items: center;
+}
+
 #icon-trash:hover{
     color: #d18720;
 }

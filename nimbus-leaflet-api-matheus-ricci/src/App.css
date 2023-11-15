@@ -43,8 +43,6 @@ h1 {
   width: 100%;
   display: flex;
   justify-content: center;
-  margin-bottom: 15px;
-  margin-top: 15px;
 }
 
 .interest-point-span {
@@ -52,6 +50,8 @@ h1 {
   font-size: 1.6rem;
   font-weight: 500;
   align-items: center;
+  margin-bottom: 15px;
+  margin-top: 15px;
 }
 
 .icons-fa {
