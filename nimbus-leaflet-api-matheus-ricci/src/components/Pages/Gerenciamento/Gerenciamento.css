@@ -1,3 +1,7 @@
+body{
+    overflow-x: hidden !important;
+}
+
 #list-markers{
     display: flex;
     justify-content: space-between;

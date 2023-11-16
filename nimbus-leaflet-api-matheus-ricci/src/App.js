@@ -8,7 +8,6 @@ import Visualizacao from './components/Pages/Visualizacao/Visualizacao';
 
 function App() {
 
-
   return(
     <Router>
     <Routes>
@@ -17,7 +16,6 @@ function App() {
     </Routes>
   </Router>
   )
- 
 }
 
 export default App;
