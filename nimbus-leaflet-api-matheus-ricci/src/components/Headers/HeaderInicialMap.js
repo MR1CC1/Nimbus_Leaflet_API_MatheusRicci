@@ -16,7 +16,7 @@ const HeaderInicialMap = () => {
     });
 
     // Estado para armazenar a posição atual do mapa.
-    const [mapPosition, setMapPosition] = useState([-22.914274, -43.092566]);
+    const [mapPosition, setMapPosition] = useState([-22.9069557612611, -43.23988648507283]);
 
     // Estado para armazenar temporariamente o valor do zoom antes de salvar.
     const [tempZoom, setTempZoom] = useState(formData.zoom);
@@ -37,6 +37,7 @@ const HeaderInicialMap = () => {
                         zoom: existingData.zoom,
                     });
                     setMapPosition([existingData.lat, existingData.lng]);
+                    setTempZoom(existingData.zoom);
                 }
             } catch (error) {
             }

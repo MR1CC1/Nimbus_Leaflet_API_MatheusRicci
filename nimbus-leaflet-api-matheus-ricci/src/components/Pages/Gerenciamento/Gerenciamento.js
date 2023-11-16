@@ -35,20 +35,33 @@ const Gerenciamento = () => {
             case 'points':
                 return <HeaderPoint mode={"Novo"} />;
             case 'editpoints':
-                return <HeaderPoint 
-                mode="Editar" 
-                id={currentItem?.id}
-                description={currentItem?.description}
-                latitude={currentItem?.lat}
-                longitude={currentItem?.lng} />;
+                return <HeaderPoint
+                    mode="Editar"
+                    id={currentItem?.id}
+                    description={currentItem?.description}
+                    latitude={currentItem?.lat}
+                    longitude={currentItem?.lng} />;
             case 'areas':
                 return <HeaderAreas mode={"Nova"} />;
             case 'editareas':
-                return <HeaderAreas mode={"Editar"} description={currentItem?.description} />;
+                return <HeaderAreas
+                    mode="Editar"
+                    id={currentItem?.id}
+                    description={currentItem?.description}
+                    north={currentItem?.north}
+                    south={currentItem?.south}
+                    west={currentItem?.west}
+                    east={currentItem?.east} />;
             case 'perimeters':
                 return <HeaderPerimeters mode={"Novo"} />;
             case 'editperimeters':
-                return <HeaderPerimeters mode={"Editar"} description={currentItem?.description} />;
+                return <HeaderPerimeters
+                    mode="Editar"
+                    id={currentItem?.id}
+                    description={currentItem?.description}
+                    centerLat={currentItem?.centerLat}
+                    centerLng={currentItem?.centerLng}
+                    radius={currentItem?.radius} />;
             default:
                 return <HeaderInicialMap />;
         }

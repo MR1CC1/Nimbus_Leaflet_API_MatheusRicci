@@ -1,40 +1,55 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Circle, useMapEvents } from 'react-leaflet';
-import L from 'leaflet'; // Importando a biblioteca Leaflet para manipulação de mapas
-import { ToastContainer, toast } from 'react-toastify'
+import L from 'leaflet';
+import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const HeaderPerimeters = (props) => {
-    // Estados para armazenar a descrição, o centro do círculo, se está desenhando e o raio do círculo
-    const [description, setDescription] = useState('');
-    const [circleCenter, setCircleCenter] = useState(null);
+const HeaderPerimeters = ({ mode, id, description, centerLat, centerLng, radius }) => {
+    const [desc, setDesc] = useState(description || '');
+    const [circleCenter, setCircleCenter] = useState(
+        centerLat && centerLng ? L.latLng(centerLat, centerLng) : null
+    );
+    const [circleRadius, setCircleRadius] = useState(radius || 200);
     const [isDrawing, setIsDrawing] = useState(false);
-    const [circleRadius, setCircleRadius] = useState(200); // Raio inicial em metros
 
-    // Função para salvar o perímetro no servidor
+    useEffect(() => {
+        setDesc(description || '');
+        if (centerLat && centerLng) {
+            setCircleCenter(L.latLng(centerLat, centerLng));
+        }
+        if (radius) {
+            setCircleRadius(radius);
+        }
+    }, [description, centerLat, centerLng, radius]);
+
     const savePerimeter = async () => {
         if (!circleCenter) return;
 
-        // Prepara os dados do perímetro para envio
         const perimeterData = {
-            description: description,
+            description: desc,
             centerLat: circleCenter.lat,
             centerLng: circleCenter.lng,
             radius: circleRadius
         };
 
-        // Faz a requisição POST para salvar os dados
         try {
-            const response = await fetch('http://localhost:3001/perimeters', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(perimeterData),
-            });
+            let response;
+            if (mode === "Editar") {
+                response = await fetch(`http://localhost:3001/perimeters/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(perimeterData),
+                });
+            } else {
+                response = await fetch('http://localhost:3001/perimeters', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(perimeterData),
+                });
+            }
 
             if (response.ok) {
-                toast.success('Perímetro Salvo com Sucesso!', {
+                toast.success(`${mode === "Editar" ? 'Perímetro Atualizado' : 'Perímetro Salvo'} com Sucesso!`, {
                     position: "top-right",
                     autoClose: 3000,
                     hideProgressBar: false,
@@ -46,7 +61,7 @@ const HeaderPerimeters = (props) => {
                 });
             }
         } catch (error) {
-            toast.error('Erro ao Salvar o Perímetro!', {
+            toast.error(`Erro ao ${mode === "Editar" ? 'Atualizar' : 'Salvar'} o Perímetro!`, {
                 position: "top-right",
                 autoClose: 3000,
                 hideProgressBar: false,
@@ -59,7 +74,6 @@ const HeaderPerimeters = (props) => {
         }
     };
 
-    // Funções para manipular mudanças nos inputs de latitude, longitude e raio
     const handleLatChange = (e) => {
         const newLat = parseFloat(e.target.value);
         if (circleCenter && !isNaN(newLat)) {
@@ -78,29 +92,25 @@ const HeaderPerimeters = (props) => {
         setCircleRadius(parseFloat(e.target.value));
     };
 
-    // Componente para lidar com eventos do mapa
     function MapClickHandler() {
         useMapEvents({
             click(e) {
                 if (!isDrawing) {
-                    // Define o centro do círculo e começa a desenhar
                     setCircleCenter(e.latlng);
                     setCircleRadius(200);
                     setIsDrawing(true);
                 } else {
-                    // Finaliza o desenho
                     setIsDrawing(false);
                 }
             },
             mousemove(e) {
                 if (isDrawing && circleCenter) {
-                    // Atualiza o raio do círculo enquanto o mouse se move
                     const newRadius = circleCenter.distanceTo(e.latlng);
                     setCircleRadius(newRadius);
                 }
             }
         });
-        return null; // Este componente não renderiza nada visualmente
+        return null;
     }
 
     return (
@@ -119,10 +129,9 @@ const HeaderPerimeters = (props) => {
                 theme="light"
             />
             <div className='header'>
-                <h1>{props.mode} Perímetro</h1>
-                {/* Campos de entrada para descrição, latitude, longitude e raio */}
+                <h1>{mode} Perímetro</h1>
                 <label>Descrição</label>
-                <input type="text" value={description} onChange={(e) => setDescription(e.target.value)} />
+                <input type="text" value={desc} onChange={(e) => setDesc(e.target.value)} />
                 <label>Latitude</label>
                 <input type="number" value={circleCenter ? circleCenter.lat : ''} onChange={handleLatChange} />
                 <label>Longitude</label>
@@ -131,11 +140,14 @@ const HeaderPerimeters = (props) => {
                 <input type="number" value={circleRadius} onChange={handleRadiusChange} />
                 <button onClick={() => {
                     savePerimeter()
-                    window.location.reload()
-                }}>Salvar</button>
+                    setTimeout(() => {
+                        window.location.reload()
+                        }, 3500);
+                }}>
+                    Salvar
+                </button>
             </div>
-            {/* Container do mapa com uma camada de tile e um círculo representando o perímetro */}
-            <MapContainer center={[10, 10]} zoom={13} scrollWheelZoom={true}>
+            <MapContainer center={[-22.9069557612611, -43.23988648507283]} zoom={11} scrollWheelZoom={true}>
                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                 {circleCenter && <Circle center={circleCenter} radius={circleRadius} />}
                 <MapClickHandler />

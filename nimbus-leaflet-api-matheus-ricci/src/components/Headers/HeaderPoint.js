@@ -140,15 +140,17 @@ const HeaderPoint = ({ mode, id,  description, latitude, longitude }) => {
                 />
                 <button onClick={() => {
                     savePoint()
-                    window.location.reload()
+                    setTimeout(() => {
+                        window.location.reload()
+                        }, 3500);
                 }}>
                     Salvar
                 </button>
             </div>
             {/* Container do mapa com uma camada de tile e um marcador representando o ponto */}
             <MapContainer
-                center={[10, 10]}
-                zoom={13}
+                center={[-22.9069557612611, -43.23988648507283]}
+                zoom={11}
                 scrollWheelZoom={true}
             >
                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />

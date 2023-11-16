@@ -1,85 +1,96 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { MapContainer, TileLayer, Rectangle, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
-import { ToastContainer, toast } from 'react-toastify'
+import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-// Componente para lidar com eventos do mapa
 const MapEventHandler = ({ onMapClick, onMapMouseMove, drawing }) => {
     useMapEvents({
-        click: onMapClick, // Define o que acontece ao clicar no mapa. 'onMapClick' é passado como prop.
-        mousemove: drawing ? onMapMouseMove : undefined, // Define o evento de movimento do mouse, só ativo se 'drawing' for verdadeiro.
+        click: onMapClick,
+        mousemove: drawing ? onMapMouseMove : undefined,
     });
-    return null; // Este componente não renderiza nada visualmente.
+    return null;
 };
 
-// Componente principal para criar áreas no mapa
-const HeaderAreas = (props) => {
-    // Estados para gerenciar a descrição da área, limites, se está desenhando e o ponto inicial.
-    const [description, setDescription] = useState('');
-    const [bounds, setBounds] = useState(null);
+const HeaderAreas = ({ mode, id, description, north, south, west, east }) => {
+    const [desc, setDesc] = useState(description || '');
+    const [bounds, setBounds] = useState(
+        north && south && west && east ? L.latLngBounds([[north, west], [south, east]]) : null
+    );
     const [drawing, setDrawing] = useState(false);
     const [startPoint, setStartPoint] = useState(null);
 
-    // Manipula mudanças na latitude (norte/sul) da área
+    useEffect(() => {
+        setDesc(description || '');
+        if (north && south && west && east) {
+            setBounds(L.latLngBounds([[north, west], [south, east]]));
+        }
+    }, [description, north, south, west, east]);
+
     const handleLatChange = useCallback((which, value) => {
         if (!bounds) return;
-        // Define a nova latitude norte ou sul com base no input do usuário.
         const north = which === 'north' ? value : bounds.getNorth();
         const south = which === 'south' ? value : bounds.getSouth();
-        // Atualiza os limites da área.
         setBounds(L.latLngBounds([north, bounds.getWest()], [south, bounds.getEast()]));
     }, [bounds]);
 
-    // Manipula mudanças na longitude (oeste/leste) da área
     const handleLngChange = useCallback((which, value) => {
         if (!bounds) return;
-        // Define a nova longitude oeste ou leste com base no input do usuário.
         const west = which === 'west' ? value : bounds.getWest();
         const east = which === 'east' ? value : bounds.getEast();
-        // Atualiza os limites da área.
         setBounds(L.latLngBounds([bounds.getNorth(), west], [bounds.getSouth(), east]));
     }, [bounds]);
 
-    // Manipula clique no mapa
     const handleMapClick = useCallback((e) => {
         if (!drawing) {
-            // Inicia o desenho definindo o ponto inicial e os limites.
             setDrawing(true);
             setStartPoint(e.latlng);
             setBounds(L.latLngBounds(e.latlng, e.latlng));
         } else {
-            // Finaliza o desenho.
             setDrawing(false);
             setStartPoint(null);
         }
     }, [drawing]);
 
-    // Salva os dados da área no servidor
+    const handleMapMouseMove = useCallback((e) => {
+        if (drawing && startPoint) {
+            const north = Math.max(startPoint.lat, e.latlng.lat);
+            const south = Math.min(startPoint.lat, e.latlng.lat);
+            const west = Math.min(startPoint.lng, e.latlng.lng);
+            const east = Math.max(startPoint.lng, e.latlng.lng);
+            setBounds(L.latLngBounds([north, west], [south, east]));
+        }
+    }, [drawing, startPoint]);
+
     const saveArea = async () => {
         if (!bounds) return;
 
-        // Prepara os dados da área para envio.
         const areaData = {
-            description: description,
+            description: desc,
             north: bounds.getNorth(),
             south: bounds.getSouth(),
             west: bounds.getWest(),
             east: bounds.getEast()
         };
 
-        // Faz a requisição POST para salvar os dados.
         try {
-            const response = await fetch('http://localhost:3001/areas', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(areaData),
-            });
+            let response;
+            if (mode === "Editar") {
+                response = await fetch(`http://localhost:3001/areas/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(areaData),
+                });
+            } else {
+                response = await fetch('http://localhost:3001/areas', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(areaData),
+                });
+            }
 
             if (response.ok) {
-                toast.success('Área Salva com Sucesso!', {
+                toast.success(`${mode === "Editar" ? 'Área Atualizada' : 'Área Salva'} com Sucesso!`, {
                     position: "top-right",
                     autoClose: 3000,
                     hideProgressBar: false,
@@ -91,7 +102,7 @@ const HeaderAreas = (props) => {
                 });
             }
         } catch (error) {
-            toast.error('Erro ao Salvar a Área!', {
+            toast.error(`Erro ao ${mode === "Editar" ? 'Atualizar' : 'Salvar'} a Área!`, {
                 position: "top-right",
                 autoClose: 3000,
                 hideProgressBar: false,
@@ -104,19 +115,6 @@ const HeaderAreas = (props) => {
         }
     };
 
-    // Manipula o movimento do mouse no mapa durante o desenho
-    const handleMapMouseMove = useCallback((e) => {
-        if (drawing && startPoint) {
-            // Calcula os novos limites da área enquanto o usuário move o mouse.
-            const north = Math.max(startPoint.lat, e.latlng.lat);
-            const south = Math.min(startPoint.lat, e.latlng.lat);
-            const west = Math.min(startPoint.lng, e.latlng.lng);
-            const east = Math.max(startPoint.lng, e.latlng.lng);
-            setBounds(L.latLngBounds([north, west], [south, east]));
-        }
-    }, [drawing, startPoint]);
-
-    // Renderiza o componente
     return (
         <div className='header-map'>
             <ToastContainer
@@ -133,10 +131,9 @@ const HeaderAreas = (props) => {
                 theme="light"
             />
             <div className='header'>
-                <h1>{props.mode} Área</h1>
-                {/* Campos de entrada para descrição e coordenadas da área */}
+                <h1>{mode} Área</h1>
                 <label>Descrição</label>
-                <input type="text" value={description} onChange={(e) => setDescription(e.target.value)} />
+                <input type="text" value={desc} onChange={(e) => setDesc(e.target.value)} />
                 <label>Latitude Superior</label>
                 <input type="number" value={bounds ? bounds.getNorth() : ''} onChange={(e) => handleLatChange('north', parseFloat(e.target.value))} />
                 <label>Latitude Inferior</label>
@@ -147,11 +144,13 @@ const HeaderAreas = (props) => {
                 <input type="number" value={bounds ? bounds.getEast() : ''} onChange={(e) => handleLngChange('east', parseFloat(e.target.value))} />
                 <button onClick={() => {
                     saveArea()
-                    window.location.reload()
-                }}>Salvar</button>
+                    setTimeout(() => {
+                        window.location.reload()
+                    }, 3500);
+                }
+                }>Salvar</button>
             </div>
-            {/* Container do mapa com camada de tiles e retângulo representando a área selecionada */}
-            <MapContainer center={[10, 10]} zoom={13} scrollWheelZoom={true}>
+            <MapContainer center={[-22.9069557612611, -43.23988648507283]} zoom={11} scrollWheelZoom={true}>
                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                 {bounds && <Rectangle bounds={bounds} />}
                 <MapEventHandler onMapClick={handleMapClick} onMapMouseMove={handleMapMouseMove} drawing={drawing} />
