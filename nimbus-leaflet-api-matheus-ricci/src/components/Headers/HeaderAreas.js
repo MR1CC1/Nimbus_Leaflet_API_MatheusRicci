@@ -1,18 +1,23 @@
+// Importando os hooks e componentes do React e bibliotecas relacionadas
 import React, { useState, useCallback, useEffect } from 'react';
-import { MapContainer, TileLayer, Rectangle, useMapEvents } from 'react-leaflet';
-import L from 'leaflet';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { MapContainer, TileLayer, Rectangle, useMapEvents } from 'react-leaflet'; // Componentes para criar o mapa
+import L from 'leaflet'; // Biblioteca Leaflet para manipulação de mapas
+import { ToastContainer, toast } from 'react-toastify'; // Componentes para notificações
+import 'react-toastify/dist/ReactToastify.css'; // Estilos para as notificações
 
+// Componente para lidar com eventos do mapa
 const MapEventHandler = ({ onMapClick, onMapMouseMove, drawing }) => {
+    // Registra eventos de clique e movimento do mouse no mapa
     useMapEvents({
         click: onMapClick,
         mousemove: drawing ? onMapMouseMove : undefined,
     });
-    return null;
+    return null; // Não renderiza nenhum elemento visual
 };
 
+// Componente principal para gerenciar áreas no mapa
 const HeaderAreas = ({ mode, id, description, north, south, west, east }) => {
+    // Estados para a descrição, limites da área, estado de desenho e ponto inicial
     const [desc, setDesc] = useState(description || '');
     const [bounds, setBounds] = useState(
         north && south && west && east ? L.latLngBounds([[north, west], [south, east]]) : null
@@ -20,6 +25,7 @@ const HeaderAreas = ({ mode, id, description, north, south, west, east }) => {
     const [drawing, setDrawing] = useState(false);
     const [startPoint, setStartPoint] = useState(null);
 
+    // Atualiza estados com base nas props recebidas
     useEffect(() => {
         setDesc(description || '');
         if (north && south && west && east) {
@@ -27,6 +33,7 @@ const HeaderAreas = ({ mode, id, description, north, south, west, east }) => {
         }
     }, [description, north, south, west, east]);
 
+    // Funções callback para lidar com alterações na latitude e longitude
     const handleLatChange = useCallback((which, value) => {
         if (!bounds) return;
         const north = which === 'north' ? value : bounds.getNorth();
@@ -41,6 +48,7 @@ const HeaderAreas = ({ mode, id, description, north, south, west, east }) => {
         setBounds(L.latLngBounds([bounds.getNorth(), west], [bounds.getSouth(), east]));
     }, [bounds]);
 
+    // Funções callback para manipulação de cliques e movimento do mouse no mapa
     const handleMapClick = useCallback((e) => {
         if (!drawing) {
             setDrawing(true);
@@ -62,9 +70,11 @@ const HeaderAreas = ({ mode, id, description, north, south, west, east }) => {
         }
     }, [drawing, startPoint]);
 
+    // Função para salvar a área
     const saveArea = async () => {
         if (!bounds) return;
 
+        // Preparando dados da área para envio
         const areaData = {
             description: desc,
             north: bounds.getNorth(),
@@ -73,15 +83,18 @@ const HeaderAreas = ({ mode, id, description, north, south, west, east }) => {
             east: bounds.getEast()
         };
 
+        // Tentativa de salvar a área via API
         try {
             let response;
             if (mode === "Editar") {
+                // Atualizar área existente
                 response = await fetch(`http://localhost:3001/areas/${id}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(areaData),
                 });
             } else {
+                // Criar nova área
                 response = await fetch('http://localhost:3001/areas', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -89,6 +102,7 @@ const HeaderAreas = ({ mode, id, description, north, south, west, east }) => {
                 });
             }
 
+            // Exibindo notificação de sucesso ou erro
             if (response.ok) {
                 toast.success(`${mode === "Editar" ? 'Área Atualizada' : 'Área Salva'} com Sucesso!`, {
                     position: "top-right",
@@ -115,6 +129,7 @@ const HeaderAreas = ({ mode, id, description, north, south, west, east }) => {
         }
     };
 
+    // Renderização do componente
     return (
         <div className='header-map'>
             <ToastContainer
@@ -159,4 +174,5 @@ const HeaderAreas = ({ mode, id, description, north, south, west, east }) => {
     );
 }
 
+// Exportando o componente para uso em outros locais
 export default HeaderAreas;

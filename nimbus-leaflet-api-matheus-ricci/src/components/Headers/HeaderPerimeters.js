@@ -142,7 +142,7 @@ const HeaderPerimeters = ({ mode, id, description, centerLat, centerLng, radius 
                     savePerimeter()
                     setTimeout(() => {
                         window.location.reload()
-                        }, 3500);
+                    }, 3500);
                 }}>
                     Salvar
                 </button>

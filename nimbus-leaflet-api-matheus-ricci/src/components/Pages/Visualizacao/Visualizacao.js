@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Rectangle, Circle, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import SideBar from '../../SideBar/SideBar';
-import './Visualizacao.css'
+import './Visualizacao.css';
+import { FaRegEye, FaRegEyeSlash } from 'react-icons/fa';
 
 const Visualizacao = () => {
   // Configura os ícones padrão do Leaflet para marcadores
@@ -17,6 +18,11 @@ const Visualizacao = () => {
   const [areas, setAreas] = useState([]);
   const [perimeters, setPerimeters] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
+
+  // Estados para controlar a visibilidade dos pontos, áreas e perímetros
+  const [showPoints, setShowPoints] = useState(false);
+  const [showAreas, setShowAreas] = useState(false);
+  const [showPerimeters, setShowPerimeters] = useState(false);
 
   // Carrega os dados da API quando o componente é montado
   useEffect(() => {
@@ -33,6 +39,51 @@ const Visualizacao = () => {
       .then(data => setPerimeters(data));
   }, []);
 
+  // Funções para mostrar/esconder pontos, áreas e perímetros
+  const toggleShowPoints = () => {
+    setShowPoints(!showPoints);
+    if (!showPoints) {
+      setSelectedItems([...selectedItems, ...points.map(point => ({ type: 'point', id: point.id }))]);
+    } else {
+      setSelectedItems(selectedItems.filter(item => item.type !== 'point'));
+    }
+  };
+
+  const toggleShowAreas = () => {
+    setShowAreas(!showAreas);
+    if (!showAreas) {
+      setSelectedItems([...selectedItems, ...areas.map(area => ({ type: 'area', id: area.id }))]);
+    } else {
+      setSelectedItems(selectedItems.filter(item => item.type !== 'area'));
+    }
+  };
+
+  const toggleShowPerimeters = () => {
+    setShowPerimeters(!showPerimeters);
+    if (!showPerimeters) {
+      setSelectedItems([...selectedItems, ...perimeters.map(perimeter => ({ type: 'perimeter', id: perimeter.id }))]);
+    } else {
+      setSelectedItems(selectedItems.filter(item => item.type !== 'perimeter'));
+    }
+  };
+
+  // Função para mostrar/esconder todos os itens
+  const toggleShowAll = (show) => {
+    setShowPoints(show);
+    setShowAreas(show);
+    setShowPerimeters(show);
+
+    if (show) {
+      setSelectedItems([
+        ...points.map(point => ({ type: 'point', id: point.id })),
+        ...areas.map(area => ({ type: 'area', id: area.id })),
+        ...perimeters.map(perimeter => ({ type: 'perimeter', id: perimeter.id }))
+      ]);
+    } else {
+      setSelectedItems([]);
+    }
+  };
+
   // Alterna a seleção de um item (ponto, área ou perímetro)
   const toggleSelectedItem = (type, id) => {
     const index = selectedItems.findIndex(item => item.type === type && item.id === id);
@@ -46,15 +97,21 @@ const Visualizacao = () => {
   // Renderiza as listas de pontos, áreas e perímetros na barra lateral
   const renderList = (items, type) => (
     <ul id='render-list'>
-      {items.map((item) => (
-        <li
-          key={item.id}
-          style={{ backgroundColor: selectedItems.some(selectedItem => selectedItem.id === item.id && selectedItem.type === type) ? '#d18720' : '#d6d8db' }}
-          onClick={() => toggleSelectedItem(type, item.id)}
-        >
-          <div>{item.description}</div>
-        </li>
-      ))}
+      {items.map((item) => {
+        const isSelected = selectedItems.some(selectedItem => selectedItem.id === item.id && selectedItem.type === type);
+        return (
+          <li
+            key={item.id}
+            style={{ backgroundColor: isSelected ? '#d18720' : '#d6d8db' }}
+            onClick={() => toggleSelectedItem(type, item.id)}
+          >
+            <div id='list-item-div'>
+              {item.description}
+              {isSelected ? <FaRegEye /> : <FaRegEyeSlash />}
+            </div>
+          </li>
+        );
+      })}
     </ul>
   );
 
@@ -68,7 +125,7 @@ const Visualizacao = () => {
   // Renderiza marcadores no mapa para pontos selecionados
   const renderMarkers = () => {
     return points
-      .filter(point => selectedItems.some(selectedItem => selectedItem.type === 'point' && selectedItem.id === point.id))
+      .filter(point => showPoints || selectedItems.some(selectedItem => selectedItem.type === 'point' && selectedItem.id === point.id))
       .map(point => (
         <Marker key={point.id} position={[point.lat, point.lng]}>
           <Popup>{point.description}</Popup>
@@ -79,7 +136,7 @@ const Visualizacao = () => {
   // Renderiza retângulos no mapa para áreas selecionadas
   const renderAreas = () => {
     return areas
-      .filter(area => selectedItems.some(selectedItem => selectedItem.type === 'area' && selectedItem.id === area.id))
+      .filter(area => showAreas || selectedItems.some(selectedItem => selectedItem.type === 'area' && selectedItem.id === area.id))
       .map(area => (
         <Rectangle key={area.id} bounds={[[area.north, area.west], [area.south, area.east]]}>
           <Popup>{area.description}</Popup>
@@ -90,7 +147,7 @@ const Visualizacao = () => {
   // Renderiza círculos no mapa para perímetros selecionados
   const renderPerimeters = () => {
     return perimeters
-      .filter(perimeter => selectedItems.some(selectedItem => selectedItem.type === 'perimeter' && selectedItem.id === perimeter.id))
+      .filter(perimeter => showPerimeters || selectedItems.some(selectedItem => selectedItem.type === 'perimeter' && selectedItem.id === perimeter.id))
       .map(perimeter => (
         <Circle key={perimeter.id} center={[perimeter.centerLat, perimeter.centerLng]} radius={perimeter.radius}>
           <Popup>{perimeter.description}</Popup>
@@ -103,12 +160,23 @@ const Visualizacao = () => {
     <div className='box'>
       <SideBar>
         <HeaderButton label="Pontos" />
+        <input type="checkbox" checked={showPoints} onChange={toggleShowPoints} /> Mostrar/Esconder Pontos
         {renderList(points, "point")}
+
         <HeaderButton label="Áreas" />
+        <input type="checkbox" checked={showAreas} onChange={toggleShowAreas} /> Mostrar/Esconder Áreas
         {renderList(areas, "area")}
+
         <HeaderButton label="Perímetros" />
+        <input type="checkbox" checked={showPerimeters} onChange={toggleShowPerimeters} /> Mostrar/Esconder Perímetros
         {renderList(perimeters, "perimeter")}
+
+        <div>
+          <button id='btn-hide' onClick={() => toggleShowAll(true)}>Mostrar Todos</button>
+          <button id='btn-hide' onClick={() => toggleShowAll(false)}>Esconder Todos</button>
+        </div>
       </SideBar>
+
       <MapContainer center={[-22.9069557612611, -43.23988648507283]} zoom={11} scrollWheelZoom={true}>
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
         {renderMarkers()}

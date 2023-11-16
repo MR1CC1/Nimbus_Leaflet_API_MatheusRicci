@@ -4,7 +4,8 @@ import '../SideBar/SideBar.css';
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 
-const HeaderPoint = ({ mode, id,  description, latitude, longitude }) => {
+const HeaderPoint = ({ mode, id, description, latitude, longitude }) => {
+
     // Usar os valores das props para inicializar os estados
     const [descPoint, SetDescPoint] = useState('');
     const [latPoint, SetLatPoint] = useState(0);
@@ -23,7 +24,7 @@ const HeaderPoint = ({ mode, id,  description, latitude, longitude }) => {
             lat: latPoint,
             lng: lngPoint
         };
-    
+
         let response;
         try {
             if (mode === "Editar") {
@@ -45,7 +46,7 @@ const HeaderPoint = ({ mode, id,  description, latitude, longitude }) => {
                     body: JSON.stringify(pointData),
                 });
             }
-    
+
             if (response.ok) {
                 toast.success('Ponto Salvo com Sucesso!', {
                     // Configurações do toast
@@ -57,7 +58,6 @@ const HeaderPoint = ({ mode, id,  description, latitude, longitude }) => {
             });
         }
     };
-    
 
     // Funções para manipular mudanças nos inputs de descrição, latitude e longitude
     const handleInputDesc = (e) => {
@@ -99,7 +99,7 @@ const HeaderPoint = ({ mode, id,  description, latitude, longitude }) => {
                 SetLngPoint(newMarker.lng);
             },
         });
-        return null; // Este componente não renderiza nada visualmente
+        return null;
     }
 
     return (
@@ -142,7 +142,7 @@ const HeaderPoint = ({ mode, id,  description, latitude, longitude }) => {
                     savePoint()
                     setTimeout(() => {
                         window.location.reload()
-                        }, 3500);
+                    }, 3500);
                 }}>
                     Salvar
                 </button>

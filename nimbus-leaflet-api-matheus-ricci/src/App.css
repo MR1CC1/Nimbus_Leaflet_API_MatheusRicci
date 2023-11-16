@@ -4,7 +4,7 @@
 }
 
 .leaflet-container {
-  width: 80vw;
+  width: 83.5vw;
   height: 100vh;
 }
 
@@ -15,12 +15,12 @@ h1 {
 .header-map {
   display: flex;
   flex-direction: column;
-  width: 80vw;
+  width: 82vw;
 }
 
 .header {
-  width: auto;
-  height: 18vh;
+  width: 82vw;
+  height: 15vh;
   background-color: #ebe7e7;
   padding: 15px;
   font-weight: 600;
