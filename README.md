@@ -22,7 +22,13 @@ dos dados e dos endpoints pode ser definido de acordo com as necessidades.
 
 ## [Clique Aqui](https://www.linkedin.com/in/matheus-ricci-228a06182/) Para acessar meu perfil no Linkedin - Matheus Ricci
 
-
+## Segue Prints do Projeto
+![Screenshot_1](https://github.com/MR1CC1/Nimbus_Leaflet_API_MatheusRicci/assets/57235913/01975c19-0783-4702-ba56-fcf0eae90f05)
+![Screenshot_2](https://github.com/MR1CC1/Nimbus_Leaflet_API_MatheusRicci/assets/57235913/9bacd61f-efdc-43c1-ad34-4f779cbedec5)
+![Screenshot_3](https://github.com/MR1CC1/Nimbus_Leaflet_API_MatheusRicci/assets/57235913/f5a07a1b-8a7f-46bd-a9cf-961c96039268)
+![Screenshot_4](https://github.com/MR1CC1/Nimbus_Leaflet_API_MatheusRicci/assets/57235913/f6d2c444-1c45-47c6-af91-5d631c504cbc)
+![Screenshot_5](https://github.com/MR1CC1/Nimbus_Leaflet_API_MatheusRicci/assets/57235913/33894ff4-a2a2-4c29-b24e-5c15b375103e)
+![Screenshot_6](https://github.com/MR1CC1/Nimbus_Leaflet_API_MatheusRicci/assets/57235913/dd0e8ac4-d6ad-40c1-b537-a60061e9d998)
 
 ## Segue abaixo uma documentação resumida da aplicação
 
