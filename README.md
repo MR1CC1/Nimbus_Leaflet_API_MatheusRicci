@@ -1,5 +1,30 @@
 # Nimbus_Leaflet_API_MatheusRicci
 
+## Este é um Teste Prático da Nimbus para Desenvolvedor Front End Pleno
+
+Desenvolva uma aplicação web para visualização e gerenciamento de pontos e áreas de
+interesse em um mapa. Utilize o React e a biblioteca Leaflet para a implementação da solução.
+Para armazenar os dados, deve-se utilizar uma biblioteca de mock de API, e a
+comunicação com ela deve ser feita como se estivesse utilizando uma API RESTful. O formato
+dos dados e dos endpoints pode ser definido de acordo com as necessidades.
+
+1 - Para Instalar os pacotes da aplicação primeiro execute em "Nimbus_Leaflet_API_MatheusRicci\nimbus-leaflet-api-matheus-ricci" o comando
+
+### `npm i`
+
+2 - Em seguida inicie o Json Server em "Nimbus_Leaflet_API_MatheusRicci\nimbus-leaflet-api-matheus-ricci\src>" e execute
+
+### `json-server --watch db.json --port 3001`
+
+3 - Com o json Server iniciado, inicie a aplicação executando em "Nimbus_Leaflet_API_MatheusRicci\nimbus-leaflet-api-matheus-ricci\src>" o comando
+
+### `npm start`
+
+## [Clique Aqui](https://www.linkedin.com/in/matheus-ricci-228a06182/) Para acessar meu perfil no Linkedin - Matheus Ricci
+
+
+
+## Segue abaixo uma documentação resumida da aplicação
 
 1. App.js
 
